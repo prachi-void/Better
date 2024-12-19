@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Books</title>
+    <script>
+        function searchBooks() {
+            const query = document.getElementById('query').value;
+            if (query.length === 0) {
+                document.getElementById('results').innerHTML = "";
+                return;
+            }
+            fetch(`/search_ajax?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = "";
+                    if (data.length > 0) {
+                        data.forEach(book => {
+                            const bookItem = document.createElement('div');
+                            bookItem.textContent = `${book.title} by ${book.author}`;
+                            resultsDiv.appendChild(bookItem);
+                        });
+                    } else {
+                        resultsDiv.innerHTML = "No matching books found.";
+                    }
+                });
+        }
+    </script>
+</head>
+<body>
+    <h2>Search Books</h2>
+    <form onsubmit="return false;">
+        <label for="query">Book Title:</label><br>
+        <input type="text" id="query" name="query" oninput="searchBooks()"><br><br>
+    </form>
+    <h3>Results:</h3>
+    <div id="results"></div>
+    <p><a href="/logout">Log out</a></p>
+</body>
+</html>
